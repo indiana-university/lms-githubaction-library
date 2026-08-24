@@ -89,7 +89,7 @@ jobs:
           echo "<tr><td>Environment</td><td>${{ inputs.server_env }}</td></tr>" >> $GITHUB_STEP_SUMMARY
           echo '</table>' >> $GITHUB_STEP_SUMMARY
       - name: Clone GitHub tool repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           path: tools/${{ vars.DEPLOY_DIR }}
       - name: mvn setup
@@ -121,7 +121,7 @@ jobs:
         password: ${{ secrets.LMS_REGISTRY_PASSWORD }}
     steps:
       - name: Clone GitHub repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: iu-uits-es/ess-lms-canvas-standalone-apps
           ref: ${{ inputs.helm_deployer_branch }}
