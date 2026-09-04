@@ -77,6 +77,8 @@ jobs:
     runs-on: self-hosted
     container:
       image: maven:3-eclipse-temurin-${{ inputs.java_version }}
+      volumes:
+        - /opt/actions/cache/npm_cache/iu-uits-es/${{ vars.DEPLOY_DIR }}:/tmp/npm_cache
     environment: ${{ inputs.server_env }}
     steps:
       - name: Version Summary
@@ -94,9 +96,15 @@ jobs:
           path: tools/${{ vars.DEPLOY_DIR }}
       - name: mvn setup
         run: mkdir /root/.m2
+      - name: NPM configuration
+        run: |
+          touch /tmp/.npmrc
+          echo 'cache=/tmp/npm_cache' >> /tmp/.npmrc
       - name: Create maven settings.xml
         run: echo -n '${{ secrets.LMS_MAVEN_SETTINGS }}' | base64 -d > /root/.m2/settings.xml
       - name: Maven Build
+        env:
+          NPM_CONFIG_GLOBALCONFIG: /tmp/.npmrc
         run: |
           mvn clean install -B -P '${{ vars.BUILD_PROFILES}},build-image,docker-push' \
             -Dspring-boot.build-image.publish=true \
